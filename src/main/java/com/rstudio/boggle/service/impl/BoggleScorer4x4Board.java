@@ -32,6 +32,6 @@ public class BoggleScorer4x4Board implements BoggleScorer {
 
     @Override
     public Integer score(String word) {
-        return scoreCard.get(word.length());
+        return scoreCard.get(word.length()) == null ? 11 : scoreCard.get(word.length());
     }
 }

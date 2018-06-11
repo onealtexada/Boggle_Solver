@@ -44,10 +44,6 @@ public class BoggleController {
 
         int points = 0, score = 0;
         for (String word : finalWordList) {
-            if (word == null) {
-                continue;
-            }
-
             score = scorer.score(word);
             result = new BoggleResult(word, score);
             sortedList.add(result);
