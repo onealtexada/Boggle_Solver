@@ -7,9 +7,7 @@ import org.springframework.util.Assert;
 
 import javax.inject.Inject;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Service
@@ -26,41 +24,56 @@ public class BoggleSolverService {
         }
 
         Set<String> validWords = new HashSet<>();
+        Set<String> usedTile;
 
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
-                solve(board, i, j,
+                usedTile = new HashSet<>();
+                solve(board, i, j, i, j,
                     String.valueOf(board[i][j]).equalsIgnoreCase("q") ? "qu"
                         : String.valueOf(board[i][j]).toLowerCase(),
-                    validWords);
+                    validWords, usedTile);
             }
         }
 
         return validWords;
     }
 
-    private void solve(char[][] board, int i, int j, String prefix,
-        Set<String> validWords) {
+    private void solve(char[][] board, int initialX, int initialY, int i, int j, String prefix,
+        Set<String> validWords, Set<String> usedTile) {
         Assert.notNull(board, "Boggle Board is null");
         Assert.notNull(validWords, "ValidWords list is null");
 
-        List<String> usedTile = new ArrayList<>();
         usedTile.add(i + "," + j);
+        int startingXValue = Math.max(0, i - 1);
+        int startingYValue = Math.max(0, j - 1);
+        int adjacentXValue = Math.min(board.length, i + 2);
+        int adjacentYValue = Math.min(board.length, j + 2);
 
-        for (int x = Math.max(0, i - 1); x < Math.min(board.length,
-            i + 2); x++) {
-            for (int y = Math.max(0, j - 1); y < Math.min(board.length,
-                j + 2); y++) {
+        for (int x = startingXValue; x < adjacentXValue; x++) {
+            for (int y = startingYValue; y < adjacentYValue; y++) {
                 if (usedTile.contains(x + "," + y)) {
                     continue;
                 }
 
-                usedTile.add(x + "," + y);
-                String word = prefix + board[x][y];
+                String word =
+                    prefix + (String.valueOf(board[x][y]).equalsIgnoreCase("q")
+                        ? "qu" : String.valueOf(board[x][y]).toLowerCase());
 
-                if (dictionary.validPrefix(word)) {
+                if (word.equals("with")) {
+                    System.out.println("Got Here");
+                }
+
+                if (dictionary.validWord(word, validWords)) {
+                    usedTile = new HashSet<>();
+                    solve(board, initialX, initialY, initialX, initialY, word, validWords, usedTile);
+                }
+                else if (dictionary.validPrefix(word)) {
                     dictionary.validWord(word, validWords);
-                    solve(board, x, y, word, validWords);
+                    usedTile.add(x + "," + y);
+                    solve(board, initialX, initialY, x, y, word, validWords, usedTile);
+                } else {
+                    usedTile.remove(x + "," + y);
                 }
             }
         }

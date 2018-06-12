@@ -1,6 +1,8 @@
 package com.rstudio.boggle.service;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,9 +16,11 @@ public class BoggleSolverServiceTest {
 
     @Test
     public void testSolve() {
-        char[][] board = {{'a', 'b', 'c', 'd'},{'q','s','t','v',},{'e','f','g','c'},{'t','b','z','r'}};
+        char[][] board = {{'w', 'i', 'r', 'n'},{'s','i','t','h',},{'t','i','t','l'},{'e','l','l','i'}};
         Set<String> finalWordList = boggleSolverService.solve(board);
 
         assertNotNull(finalWordList);
+        assertTrue(finalWordList.contains("with"));
+        assertFalse(finalWordList.contains("elite"));
     }
 }

@@ -32,7 +32,7 @@ public class BoggleDictionary implements Dictionary {
 
     @Override
     public boolean validWord(String word, Set<String> validWords) {
-        if (word.length() > 2 && dictionary.contains(word)) {
+        if (word.length() > 2 && dictionary.contains(word) && !validWords.contains(word)) {
             validWords.add(word);
             return true;
         }
