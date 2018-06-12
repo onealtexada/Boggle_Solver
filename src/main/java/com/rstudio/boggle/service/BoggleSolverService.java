@@ -25,11 +25,11 @@ public class BoggleSolverService {
 
         Set<String> validWords = new HashSet<>();
         Set<String> usedTile;
-
+        
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
                 usedTile = new HashSet<>();
-                solve(board, i, j, i, j,
+                solve(board, i, j,
                     String.valueOf(board[i][j]).equalsIgnoreCase("q") ? "qu"
                         : String.valueOf(board[i][j]).toLowerCase(),
                     validWords, usedTile);
@@ -39,8 +39,8 @@ public class BoggleSolverService {
         return validWords;
     }
 
-    private void solve(char[][] board, int initialX, int initialY, int i, int j, String prefix,
-        Set<String> validWords, Set<String> usedTile) {
+    private void solve(char[][] board, int i, int j,
+        String prefix, Set<String> validWords, Set<String> usedTile) {
         Assert.notNull(board, "Boggle Board is null");
         Assert.notNull(validWords, "ValidWords list is null");
 
@@ -60,21 +60,13 @@ public class BoggleSolverService {
                     prefix + (String.valueOf(board[x][y]).equalsIgnoreCase("q")
                         ? "qu" : String.valueOf(board[x][y]).toLowerCase());
 
-                if (word.equals("with")) {
-                    System.out.println("Got Here");
-                }
-
-                if (dictionary.validWord(word, validWords)) {
-                    usedTile = new HashSet<>();
-                    solve(board, initialX, initialY, initialX, initialY, word, validWords, usedTile);
-                }
-                else if (dictionary.validPrefix(word)) {
+                if (dictionary.validPrefix(word)) {
                     dictionary.validWord(word, validWords);
                     usedTile.add(x + "," + y);
-                    solve(board, initialX, initialY, x, y, word, validWords, usedTile);
-                } else {
-                    usedTile.remove(x + "," + y);
+                    solve(board, x, y, word, validWords, usedTile);
                 }
+                
+                usedTile.remove(x + "," + y);
             }
         }
     }
